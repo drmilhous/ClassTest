@@ -1,5 +1,5 @@
 My name is Matt  Miller
-<<<<<<< HEAD
+Bob is my name
 
 Ben Wagner
 I'm ben bomberger.
