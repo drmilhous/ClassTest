@@ -1,4 +1,4 @@
-My nam is Matt
+My name is Matt  Miller
 <<<<<<< HEAD
 
 Ben Wagner
