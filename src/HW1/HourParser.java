@@ -8,12 +8,25 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Scanner;
 
+/**
+ * Write a program that will ask the user the number of hours to go back.
+ * Create a summery given for each hour. Produce a CSV file.
+ * As user for the number of hours. (TeamName)
+ */
 public class HourParser {
 
-    public static void main(String[] args) {
+    private String fileName;
+    private int hours;
+
+    public HourParser(String name, int h) {
+        fileName = name;
+        hours = h;
+    }
+
+    public void readFile() {
         Scanner fileScanner = null;
         try {
-            fileScanner = new Scanner(new File("speed.txt"));
+            fileScanner = new Scanner(new File(fileName));
         } catch(FileNotFoundException e) {
             System.err.println("Error finding the file.");
             System.exit(0);
@@ -25,8 +38,9 @@ public class HourParser {
         {
             try {
                 //Testing code from Homework specs.
-                Date formattedDate = dateFormatter.parse(fileScanner.nextLine());
-                System.out.println(formattedDate);
+                String date = fileScanner.nextLine();
+                Date formattedDate = dateFormatter.parse(date);
+                System.out.println(date + "\n" + formattedDate);
                 System.exit(0);
 
                 //System.out.println(fileScanner.nextLine());
@@ -37,6 +51,15 @@ public class HourParser {
                 System.out.println("Error in parsing the line.");
             }
         }
+    }
+
+    public static void main(String[] args) {
+        Scanner keyboard = new Scanner(System.in);
+        System.out.print("Enter the number of hours: ");
+        int hours = keyboard.nextInt();
+        keyboard.close();
+
+        new HourParser("speed.txt", hours).readFile();
     }
 
 }
