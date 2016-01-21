@@ -14,7 +14,7 @@ import java.util.Scanner;
  * As user for the number of hours. (TeamName)
  */
 public class HourParser {
-	private final int SEGLENGTH = 10;
+	private final int SEGLENGTH = 120; //Length of an hour segment
 
     private String fileName;
     private int hours;
@@ -34,7 +34,6 @@ public class HourParser {
         }
 
         SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE MMM dd kk:mm:ss z yyyy", Locale.ENGLISH);
-        int segmentCounter = 0; //So we only get one segment to test with.
         
         try {
     		//Creates array depending on how many hours the user enters.
@@ -59,11 +58,11 @@ public class HourParser {
     		System.out.println(seg[hourCount][lineCount]); //Prints current line
     		
     		if(hourCount == (hours-1) && lineCount == (SEGLENGTH-1)) {
-    			break;
+    			break; //Breaks if the user entered hour is equal to the hour counter
     		}else if(lineCount == (SEGLENGTH-1)) {
     			lineCount = 0;
     			hourCount++;
-    			System.out.println("\n");
+    			System.out.println("\n\n");
     		} else {
     			lineCount++;
     		}
