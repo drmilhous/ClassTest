@@ -53,6 +53,27 @@ public class HourParser {
         }
     }
 
+    /**
+     * This method should get the segments of info depending on the hours.
+     */
+    public void getSegments() {
+
+    }
+
+    /**
+     * This method gets the throughput from each segment of data.
+     */
+    public void getThroughput() {
+
+    }
+
+    /**
+     * This method will use the data and write to a csv file.
+     */
+    public void writeToCSV() {
+
+    }
+
     public static void main(String[] args) {
         Scanner keyboard = new Scanner(System.in);
         System.out.print("Enter the number of hours: ");
