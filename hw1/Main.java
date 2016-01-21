@@ -48,7 +48,6 @@ public class Main {
 		//INSERT CODE HERE
 		
 		return null;
-<<<<<<< HEAD
 	}
 	public static void fileGrab(){
 		String file = "test.txt";
@@ -65,8 +64,6 @@ public class Main {
 	
 		
 		
-=======
->>>>>>> 99489dcb3f8b7cbafd2cbb4541bdaded3e3408f9
 	}
 }
 
