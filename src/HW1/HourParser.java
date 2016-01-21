@@ -14,7 +14,7 @@ import java.util.Scanner;
  * As user for the number of hours. (TeamName)
  */
 public class HourParser {
-	private final int SEGLENGTH = 120; //Length of an hour segment
+	private final int SEGLENGTH = 10; //Length one segment
 
     private String fileName;
     private int hours;
@@ -37,8 +37,19 @@ public class HourParser {
         
         try {
     		//Creates array depending on how many hours the user enters.
-    		String[][] segments = new String[hours][SEGLENGTH];
+    		String[][] segments = new String[hours * 12][SEGLENGTH];
     		segments = getSegments(fileScanner,segments);
+    		
+    		//Uncomment to see the output of the segments array.
+//    		for(int x=0;x<(hours*12);x++) {
+//    			if(x%12 == 0) {
+//    				System.out.println("\n=============================NEW HOUR=============================");
+//    			}
+//    			for(int i=0;i<SEGLENGTH;i++) {
+//    				System.out.println(segments[x][i]);
+//    			}
+//    			System.out.println("\n");
+//    		}
 
           } catch(Exception e) { //Change Exception
               System.out.println("Error in parsing the line.");
@@ -49,21 +60,34 @@ public class HourParser {
      * This method should get the segments of info depending on the hours.
      */
     public String[][] getSegments(Scanner scan, String[][] seg) {
-    	int hourCount = 0;
+    	int segmentCount = -1;
     	int lineCount = 0;
+    	int segmentCheck = 0; //Should always equal 1 when program is ran.
     	
     	while(scan.hasNextLine()) {
-    		seg[hourCount][lineCount] = scan.nextLine();
+    		if(scan.hasNext("Mon") || scan.hasNext("Tue") || scan.hasNext("Wed") || scan.hasNext("Thu") || scan.hasNext("Fri") ||
+    		   scan.hasNext("Sat") || scan.hasNext("Sun")) {
+    			segmentCount++;
+    			segmentCheck++;
+    			System.out.println(segmentCount + " SegCheck: " + segmentCheck + " Line: " + lineCount);
+    		}
     		
-    		System.out.println(seg[hourCount][lineCount]); //Prints current line
-    		
-    		if(hourCount == (hours-1) && lineCount == (SEGLENGTH-1)) {
-    			break; //Breaks if the user entered hour is equal to the hour counter
-    		}else if(lineCount == (SEGLENGTH-1)) {
+    		//Checks if there is a another start of a date.
+    		if(segmentCheck > 1) {
+    			System.out.println("Found Fail Case....");
+    			segmentCount--;
+    			segmentCheck= 1;
     			lineCount = 0;
-    			hourCount++;
-    			System.out.println("\n\n");
-    		} else {
+    		}
+    		
+    		seg[segmentCount][lineCount] = scan.nextLine();
+    		
+    		if(segmentCount == (hours * 12)-1 && lineCount == SEGLENGTH-1) {
+    			break; //Breaks if the user entered hour is equal to the hour counter
+    		}else if(lineCount == SEGLENGTH-1) {
+    			segmentCheck--;
+    			lineCount = 0;
+    		}else {
     			lineCount++;
     		}
     	}
@@ -93,5 +117,4 @@ public class HourParser {
 
         new HourParser("speed.txt", hours).readFile();
     }
-
 }
