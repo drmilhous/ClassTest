@@ -1,4 +1,4 @@
-package hw1
+package hw1;
 
 import java.util.*;
 import java.lang.*;
@@ -12,19 +12,19 @@ public class Main {
 
 	}
 	
-	public takeInput () {
+	public static void takeInput() {
 		
 		Scanner scan = new Scanner(System.in);
-		System.out.println("Input # of days back you want to view: ")
+		System.out.println("Input # of days back you want to view: ");
 		String in = scan.nextLine();
 		readInput(in);
 		takeInput();
 		
 	}
 	
-	public readInput (String input) {
+	public static void readInput (String input) {
 		
-		int d;
+		int d = -1;
 		boolean valid = true;
 		
 		try {
@@ -42,9 +42,11 @@ public class Main {
 		
 	}
 	
-	public search (int d) {
+	public static String search (int d) {
 		
 		//INSERT CODE HERE
 		
+		return null;
 	}
 }
+
