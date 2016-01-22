@@ -98,8 +98,27 @@ public class HourParser {
     /**
      * This method gets the throughput from each segment of data.
      */
-    public void getThroughput() {
+    public void getThroughput(String[][] seg) {
+    	int hoursCount;  // keeps track of hours until target is met
+    	int testCount;  // approx 9 tests/hour
+    	double avgUp, avgDown;
+    	Scanner numFinder = new Scanner();
     	
+    	while(hoursCount < hours){
+    		double up = 0;
+    		double down = 0;
+    		
+    		while(testCount < 9){   // totaling the previous 9 upload and download speeds
+    			up+=numFinder.nextDouble(seg[hoursCount][7]);
+    			down+=numFinder.nextDouble(seg[hoursCount][9]);
+    			testCount++;
+    		}
+    		avgUp = up / 9;  // compute average Upload speed
+    		avgDown = down / 9;  // compute average Download speed
+    		hoursCount++;
+    		System.out.println("/n"+hoursCount+" hour(s) ago... /n"+"  Avg Upload: "+avgUp+"/n  Avg Download: "+avgDown);
+    	}
+    	numFinder.close();
     }
 
     /**
