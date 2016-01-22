@@ -43,24 +43,50 @@ public class Main {
 		
 	}
 	
-	public static String search (int d) {
+	public static int search(int d) {
 		
-		//INSERT CODE HERE
+		Scanner finder = new Scanner("speed.txt");
+		Scanner grabber = new Scanner("speed.txt");
+		String line = "";
+		String weekDay = "";
+		int lastLine = 0;
+		
+		for (int i = 0; !finder.hasNextLine(); i++) {
+			line = finder.nextLine();
+			if (line.startsWith("Mon") || line.startsWith("Tue") || line.startsWith("Wed")
+					|| line.startsWith("Thu") || line.startsWith("Fri") || line.startsWith("Sat")
+					|| line.startsWith("Sun"))
+				lastLine = i;
+		}
+		
+		for (int i = 0; i < lastLine; i++) {
+			grabber.nextLine();
+		}
+		
+		Scanner scanner = new Scanner("speed.txt");
+		
+		for (int i = 0; i < lastLine - (d*10); i++) {
+			scanner.nextLine();
+		}
+		
+		line = scanner.nextLine();
+		
+		Scanner reader1 = new Scanner(line);
+		Scanner reader2 = new Scanner(line);
+
+		int dateNum = reader1.nextInt();
+		String date = "";
+		
+		if (dateNum < 10)
+			date = reader2.next() + " " + reader2.next() + "  " + reader2.next();
+		else
+			date = reader2.next() + " " + reader2.next() + " " + reader2.next();
 		
 		return null;
 	}
-	public static void fileGrab(){
-		String file = "test.txt";
-		//try{
-		Scanner scan = new Scanner(file);
-		//}
-		//catch(FileNotFoundException e){
-		//	System.out.println("File not found.");
-		//}
-	}
 	
 	public static void parse() {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd kk:mm:ss z yyyy", Locale.ENGLISH);
+		//SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd kk:mm:ss z yyyy", Locale.ENGLISH);
 	
 		
 		
