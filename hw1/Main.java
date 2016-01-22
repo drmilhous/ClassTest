@@ -1,12 +1,12 @@
 package hw1;
 
 import java.util.*;
-import java.lang.*;
 import java.text.SimpleDateFormat;
 import java.io.*;
 
 public class Main {
 
+	//method calls take input
 	public static void main (String[] args) throws java.lang.Exception {
 
 		takeInput();
@@ -15,95 +15,164 @@ public class Main {
 
 	public static void takeInput() {
 
-		Scanner scan = new Scanner(System.in);
+		Scanner scanner = new Scanner(System.in);
 		System.out.println("Input # of days back you want to view: ");
-		String in = scan.nextLine();
-		readInput(in);
-		takeInput();
-
+		int in = scanner.nextInt();
+		scanner.close();
+		readInput(in + "");
 	}
 
 	public static void readInput (String input) {
-
-		int d = -1;
+		
+		int days = -1;
 		boolean valid = true;
 
 		try {
-			d = Integer.parseInt(input);
-			if (d < 0)
+			days = Integer.parseInt(input);
+			if (days < 0)
 				valid = false;
 		} catch (NumberFormatException e) {
 			valid = false;
 		}
 
+		System.out.println(valid);
+
 		if (valid == true)
-			search(d);
+			search(days);
 		else
 			System.out.println("Error: Invalid Input. Must be int greater than or equal to zero.");
 
 	}
 
-	public static int search(int d) {
+	public static void search(int d) {
 
-		/*Scanner finder = new Scanner("speed.txt");
-		Scanner grabber = new Scanner("speed.txt");
-		String line = "";
-		String weekDay = "";
-		int lastLine = 0;
+		//calls file
+		File data = new File("speed.txt");
 
-		for (int i = 0; !finder.hasNextLine(); i++) {
-			line = finder.nextLine();
-			if (line.startsWith("Mon") || line.startsWith("Tue") || line.startsWith("Wed")
-					|| line.startsWith("Thu") || line.startsWith("Fri") || line.startsWith("Sat")
-					|| line.startsWith("Sun"))
-				lastLine = i;
+		ArrayList<String> entries = new ArrayList<String>();
+		ArrayList<String> neededEntries = new ArrayList<String>();
+
+		try {
+			Scanner checkScan = new Scanner(data);  //scans to find start of next entry
+			Scanner readScan = new Scanner(data);  //takes the lines into entries in ArrayList
+			String checker = "";  //used to take line found by checker for analysis
+			String compiler = "";  //compiles all lines needed to add into ArrayList as a single entry
+
+			checkScan.nextLine();  //checkScan starts one line ahead of readScan
+
+			while (readScan.hasNextLine()) {
+
+				if (checkScan.hasNextLine()) {
+					checker = checkScan.nextLine();
+					compiler += readScan.nextLine() + "\n";  //collects lines for entry
+					if (checker.startsWith("Mon ") || checker.startsWith("Tue ") ||
+							checker.startsWith("Wed ") || checker.startsWith("Thu ") ||
+							checker.startsWith("Fri ") || checker.startsWith("Sat ") ||
+							checker.startsWith("Sun ")) {  //if line is start of new entry, compiler is
+						entries.add(compiler);             //added to the arraylist and reset
+						compiler = "";
+					}
+
+				} else {  //exits loop when full data has been read
+					break;
+				}
+
+			}
+
+			checkScan.close();
+			readScan.close();
+
+			System.out.println("Finished.");
+
+		} catch (Exception e) {
+			System.out.println("Dummies!");
 		}
 
-		for (int i = 0; i < lastLine; i++) {
-			grabber.nextLine();
+		//finds the last entry of data
+		Scanner read = new Scanner(entries.get(entries.size() - 1));
+		String ln = read.nextLine();
+
+		read.close();
+
+		Scanner scl = new Scanner(ln);  //finds the current date, month, and year
+		scl.next();
+		String month = scl.next();
+		int dy = scl.nextInt();
+		scl.next();
+		scl.next();
+		int yr = scl.nextInt();
+
+		scl.close();
+
+		String searchKey = "";  //compiles the proper date to be found to read from in data
+
+		if (dy <= d) {  //handles the calculation of date to look for
+			if (month == "Jan") {
+				searchKey += "Dec " + (31 + (dy - d));
+			} else if (month == "Feb") {
+				searchKey += "Jan " + (31 + (dy - d));
+			} else if (month == "Mar") {
+				if (yr % 4 == 0)
+					searchKey += "Feb " + (29 + (dy - d));
+				else
+					searchKey += "Feb " + (28 + (dy - d));
+			} else if (month == "Apr") {
+				searchKey += "Mar " + (31 + (dy - d));
+			} else if (month == "May") {
+				searchKey += "Apr " + (30 + (dy - d));
+			} else if (month == "Jun") {
+				searchKey += "May " + (31 + (dy - d));
+			} else if (month == "Jul") {
+				searchKey += "Jun " + (30 + (dy - d));
+			} else if (month == "Aug") {
+				searchKey += "Jul " + (31 + (dy - d));
+			} else if (month == "Sep") {
+				searchKey += "Aug " + (31 + (dy - d));
+			} else if (month == "Oct") {
+				searchKey += "Sep " + (30 + (dy - d));
+			} else if (month == "Nov") {
+				searchKey += "Oct " + (31 + (dy - d));
+			} else if (month == "Dec") {
+				searchKey += "Nov " + (30 + (dy - d));
+			}
+		} else if (dy < 10) {
+			searchKey = month + "  " + (dy - d);
+		} else {
+			searchKey = month + " " + (dy - d);
 		}
 
-		Scanner scanner = new Scanner("speed.txt");
+		System.out.println("Searching " + searchKey + "...");
 
-		for (int i = 0; i < lastLine - (d*10); i++) {
-			scanner.nextLine();
+		for (int i = 0; i < entries.size(); i++) {  //creates arrayList of entries just from requested day
+			if (entries.get(i).contains(searchKey)) {
+				neededEntries.add(entries.get(i));
+			}
 		}
 
-		line = scanner.nextLine();
-
-		Scanner reader1 = new Scanner(line);
-		Scanner reader2 = new Scanner(line);
-
-		int dateNum = reader1.nextInt();
-		String date = "";
-
-		if (dateNum < 10)
-			date = reader2.next() + " " + reader2.next() + "  " + reader2.next();
-		else
-			date = reader2.next() + " " + reader2.next() + " " + reader2.next();
-
-		return 0;*/
+		parse(neededEntries);
 	}
 
+	//Parses data from file
 	public static void parse(ArrayList<String> tests) 
 	{
+		//Array Lists that store time, download, and upload values
 		ArrayList<Date> time = new ArrayList<Date>();
 		ArrayList<Double> download = new ArrayList<Double>();
 		ArrayList<Double> upload = new ArrayList<Double>();
 
 		SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd kk:mm:ss z yyyy", Locale.ENGLISH);
-		String scan = "";
+		String scn = "";
 
 		for(int i = 0; i < tests.size(); i++) {
 
-			scan = tests.get(i);
+			scn = tests.get(i); //Gets current entry
 
-			Scanner lineReader = new Scanner(scan);
+			Scanner lineReader = new Scanner(scn); //Reads in a single line at a time
 			String happyBirthdayBryce = "";
 
 			while(lineReader.hasNextLine())
 			{
-				happyBirthdayBryce = lineReader.nextLine();
+				happyBirthdayBryce = lineReader.nextLine(); //Stores a single line in variable
 
 				if(happyBirthdayBryce.startsWith("Mon") || happyBirthdayBryce.startsWith("Tue") || 
 						happyBirthdayBryce.startsWith("Wed") || happyBirthdayBryce.startsWith("Thu") || 
@@ -112,7 +181,7 @@ public class Main {
 				{
 					try
 					{
-						time.add(dateFormat.parse(happyBirthdayBryce));
+						time.add(dateFormat.parse(happyBirthdayBryce)); //Adds date and time to time ArrayList
 					}
 					catch(Exception e)
 					{
@@ -120,18 +189,30 @@ public class Main {
 					}
 				}
 
+				//Adds Download value to download ArrayList
 				if(happyBirthdayBryce.startsWith("Download: "))
 				{
-					download.add(lineReader.nextDouble());
+					Scanner bryceScan = new Scanner(happyBirthdayBryce);
+					bryceScan.next();
+					download.add(bryceScan.nextDouble());
+					bryceScan.close();
 				}
 
+				//Adds Upload value to download ArrayList
 				if(happyBirthdayBryce.startsWith("Upload: "))
 				{
-					upload.add(lineReader.nextDouble());
+					Scanner bryceScan = new Scanner(happyBirthdayBryce);
+					bryceScan.next();
+					upload.add(bryceScan.nextDouble());
+					bryceScan.close();
 				}
 			}
+
+			lineReader.close();
+
 		}
 
+		//ArrayLists that store average every 15 minutes
 		ArrayList<Date> timeSeg = new ArrayList<Date>();
 		ArrayList<Double> downloadAvg = new ArrayList<Double>();
 		ArrayList<Double> uploadAvg = new ArrayList<Double>();
@@ -141,9 +222,13 @@ public class Main {
 
 		for(int i = 0; i < time.size(); i+=3)
 		{
-			downTotal = download.get(i) + download.get(i + 1) + download.get(i + 2);
-			upTotal = upload.get(i) + upload.get(i + 1) + upload.get(i + 2);
+			//Finds totals for every 15 minutes and stores average in new variable
+			if (i + 2 < time.size()) {
+				downTotal = download.get(i) + download.get(i + 1) + download.get(i + 2);
+				upTotal = upload.get(i) + upload.get(i + 1) + upload.get(i + 2);
+			}
 
+			//Average ArrayLists
 			timeSeg.add(time.get(i));
 			downloadAvg.add(downTotal/3);
 			uploadAvg.add(upTotal/3);
@@ -151,19 +236,22 @@ public class Main {
 
 		try
 		{
+			//Creates .csv file for output
 			FileWriter fwriter = new FileWriter("Average.csv");
+
+			fwriter.append("Time,Download,Upload,Come Rock Climbing With Us Matt\n");
 			
+			//Adds data to .csv file
 			for(int i = 0; i < timeSeg.size(); i++)
 			{
-				fwriter.append("Time: " + timeSeg.get(i) + " " + "Average Download Speed: " + downloadAvg.get(i) 
-				+ " " + "Average Upload Speed: " + uploadAvg.get(i));
+				fwriter.append(timeSeg.get(i) + "," + downloadAvg.get(i) + "," + uploadAvg.get(i) + ",...please?\n");
 			}
-			
+
 			fwriter.close();
 		}
 		catch(IOException e)
 		{
-			
+			System.out.println("YA DONE MESSED UP, BRAH!");
 		}
 	}
 }
