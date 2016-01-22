@@ -1,0 +1,20 @@
+public class test {
+   public static void ReadinFile(){
+	File file = new File ("speed.txt");
+
+	try (BufferedReader br =new BufferedReader (new FileReader(file))){
+		String line;
+		while ((line = br.readLine()) !=null) {
+			System.out.println(line);
+		}
+	} catch (FileNotFoundException e1) {
+		e1.printStackTrace();
+	} catch (IOExceptione1) {
+		e1.printStackTrace();
+	}
+
+  }
+  public static void main(String[] args){
+	ReadinFile();
+  }
+} 
