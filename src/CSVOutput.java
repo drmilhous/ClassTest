@@ -12,12 +12,13 @@ public class CSVOutput {
         try{
             FileWriter writer = new FileWriter("Average.csv");
 
-            writer.append("Time, Avg Download, Avg Upload");
-
             for(int i = 0; i < days.size();i++){
-                writer.append(days.get(i).getDate() + "," + days.get(i).getIntervals().getAvgDown() + "," + days.get(i).getIntervals());
-                for(int j = 0; j < days.get(i).getIntervals().size(){
-                    writer.append(days.get(i).getIntervals(j).)
+
+                for(int j = 0; j < days.get(i).getIntervals().size();j++){
+
+                    writer.append(days.get(i).getIntervals().get(i).getStartDateTime().toString());
+                    writer.append("Download: " + days.get(i).getIntervals().get(i).getAvgDown() + " mbps");
+                    writer.append("Upload: " + days.get(i).getIntervals().get(i).getAvgUp() + " mbps");
                 }
             }
 
