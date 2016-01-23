@@ -113,7 +113,11 @@ public class HourParser {
     			testCount++;
     		}
     		avgUp = up / 9;  // compute average Upload speed
+    		upload[hoursCount] = avgUp;
+    		
     		avgDown = down / 9;  // compute average Download speed
+    		download[hoursCount] = avgDown;
+    		
     		hoursCount++;
     		System.out.println("\n"+hoursCount+" hour(s) ago... \n"+"  Avg Upload: "+avgUp+"\n  Avg Download: "+avgDown);
     	}
