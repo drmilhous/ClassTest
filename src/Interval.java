@@ -11,14 +11,11 @@ public class Interval {
     private static double avgDown;
     private Date startDateTime;
 
-    public Interval(ArrayList<Test> test) {
+    public Interval(ArrayList<Test> test, Date date) {
         this.tests = test;
-        setStartDateTime();
-
+        this.startDateTime = new Date(date.getTime());
 
         init(test);
-
-
     }
 
     private static void init(ArrayList<Test> t) {
@@ -35,7 +32,7 @@ public class Interval {
         int minUpIndex = -1;
         int maxUpIndex = -1;
 
-        if(t.size() < 2) {
+        if(t.size() > 2) {
             for(int i=0; i<t.size(); i++) {
                 if(t.get(i).getDown() < minDown) {
                     minDown = t.get(i).getDown();
@@ -58,22 +55,25 @@ public class Interval {
                 revisedUp.add(t.get(i).getUp());
                 revisedDown.add(t.get(i).getDown());
 
-
             }
 
+            revisedDown.remove(Math.max(minDownIndex, maxDownIndex));
+            revisedDown.remove(Math.min(minDownIndex, maxDownIndex));
+            revisedUp.remove(Math.max(minUpIndex, maxUpIndex));
+            revisedUp.remove(Math.min(minUpIndex, maxUpIndex));
 
-
-
-            revisedDown.remove(minDownIndex);
-            revisedDown.remove(maxDownIndex);
-            revisedUp.remove(minUpIndex);
-            revisedUp.remove(maxUpIndex);
-
+        }else {
+            for(int i=0; i<t.size(); i++) {
+                revisedUp.add(t.get(i).getUp());
+                revisedDown.add(t.get(i).getDown());
+            }
         }
-
 
         averageUp(revisedUp);
         averageDown(revisedDown);
+
+
+
     }
 
     private static void averageUp(ArrayList<Double> ups){
@@ -112,17 +112,4 @@ public class Interval {
         return startDateTime;
     }
 
-    public void setStartDateTime() {
-        long min = Long.MAX_VALUE;
-        long current = Long.MAX_VALUE;
-
-        for(int i=0; i<tests.size(); i++){
-            current = SpeedTest.dateToUnix(tests.get(i).getDateTime());
-            if(current < min) {
-                min = current;
-            }
-        }
-
-        startDateTime = SpeedTest.unixToDate(min);
-    }
 }

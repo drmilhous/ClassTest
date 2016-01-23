@@ -10,7 +10,7 @@ public class Day {
 
     public Day(ArrayList<Interval> intervals, Date date) {
         this.intervals = intervals;
-        this.date = date;
+        this.date = new Date(date.getTime());
     }
 
     public Date getDate() {

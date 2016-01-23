@@ -28,28 +28,17 @@ public class Parser {
             String line;
 
             while((line = br.readLine()) != null) {
-                if(line.contains("CST")){
-                    if(aTestString.contains("CST")) {
-                        if(!aTestString.contains("Download")){
-                            aTestString = "";
-                            bads++;
-                        }else {
-                            testData.add(aTestString);
-                            aTestString = line;
-                        }
-
-                    }else {
-                        aTestString = line;
-                    }
-                } else if(line.contains("Could not")) {
-                    aTestString = "";
-                    bads++;
-                } else {
+                if(aTestString.contains("CST") && aTestString.contains("Download:") && aTestString.contains("Upload:")) {
+                    testData.add(aTestString);
+                    aTestString = line;
+                }else if(line.contains("CST")){
+                    aTestString = line;
+                }else {
                     aTestString += line;
                 }
             }
 
-            if(aTestString.contains("upload")) {
+            if(aTestString.contains("CST") && aTestString.contains("Download:") && aTestString.contains("Upload:")) {
                 testData.add(aTestString);
             }
 
