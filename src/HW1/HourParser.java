@@ -45,7 +45,8 @@ public class HourParser {
     		//Creates array depending on how many hours the user enters.
     		String[][] segments = new String[hours * 12][SEGLENGTH];
     		segments = getSegments(fileScanner,segments);
-    		
+    		getThroughput(segments);
+            writeToCSV();
     		//Uncomment to see the output of the segments array.
 //    		for(int x=0;x<(hours*12);x++) {
 //    			if(x%12 == 0) {
@@ -58,8 +59,9 @@ public class HourParser {
 //    		}
 
           } catch(Exception e) { //Change Exception
-              System.out.println("Error in parsing the line.");
-          }
+            System.out.println("Error in parsing the line.");
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -100,17 +102,22 @@ public class HourParser {
      * This method gets the throughput from each segment of data.
      */
     public void getThroughput(String[][] seg) {
-    	int hoursCount;  // keeps track of hours until target is met
-    	int testCount;  // approx 9 tests/hour
+    	int hoursCount = 0;  // keeps track of hours until target is met
+    	int testCount = 0;  // approx 9 tests/hour
     	double avgUp, avgDown;
-    	Scanner numFinder = new Scanner();
+    	Scanner numFinder = null;
     	while(hoursCount < hours){
     		double up = 0;
     		double down = 0;
     		while(testCount < 9){   // totaling the previous 9 upload and download speeds
-    			up+=numFinder.nextDouble(seg[hoursCount][7]);
-    			down+=numFinder.nextDouble(seg[hoursCount][9]);
-    			testCount++;
+
+                numFinder = new Scanner(seg[hoursCount][7]);
+                numFinder.next();
+                up += numFinder.nextDouble();
+                numFinder = new Scanner(seg[hoursCount][9]);
+                numFinder.next();
+                down += numFinder.nextDouble();
+                testCount++;
     		}
     		avgUp = up / 9;  // compute average Upload speed
     		upload[hoursCount] = avgUp;
