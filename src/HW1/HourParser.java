@@ -113,11 +113,12 @@ public class HourParser {
 
                 numFinder = new Scanner(seg[hoursCount][7]);
                 numFinder.next();
-                up += numFinder.nextDouble();
+                down += numFinder.nextDouble();
                 numFinder = new Scanner(seg[hoursCount][9]);
                 numFinder.next();
-                down += numFinder.nextDouble();
+                up += numFinder.nextDouble();
                 testCount++;
+                numFinder.close();
     		}
     		avgUp = up / 9;  // compute average Upload speed
     		upload[hoursCount] = avgUp;
@@ -126,9 +127,9 @@ public class HourParser {
     		download[hoursCount] = avgDown;
     		
     		hoursCount++;
+            testCount = 0; //Fixed the bug.
     		System.out.println("\n"+hoursCount+" hour(s) ago... \n"+"  Avg Upload: "+avgUp+"\n  Avg Download: "+avgDown);
     	}
-    	numFinder.close();
     }
 
     /**
