@@ -26,6 +26,8 @@ public class HourParser {
     public HourParser(String name, int h) {
         fileName = name;
         hours = h;
+        upload = new double[hours];
+        download = new double[hours];
     }
 
     public void readFile() {
@@ -154,6 +156,6 @@ public class HourParser {
         int hours = keyboard.nextInt();
         keyboard.close();
 
-        new HourParser("speed.txt", hours).writeToCSV();
+        new HourParser("speed.txt", hours).readFile();
     }
 }
