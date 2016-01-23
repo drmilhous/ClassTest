@@ -128,7 +128,7 @@ public class HourParser {
         String fileName = dateFormat.format(new Date()) + " - log.csv";
         try {
             FileWriter fileWriter = new FileWriter(fileName);
-            fileWriter.append("Hour,Download Average,UploadAverage\n"); //Add the header.
+            fileWriter.append("Hour,Download Average,Upload Average\n"); //Add the header.
             int hourCount = 0;
             for(int i = 0; i < download.length; i++)
             {
