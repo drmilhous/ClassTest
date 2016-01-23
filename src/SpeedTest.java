@@ -3,6 +3,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Scanner;
 
 /**
  * Created by Keathan on 1/22/2016.
@@ -12,6 +13,11 @@ public class SpeedTest {
     static int DAY_WIDTH = 86400;
 
     public static void main(String args[]) {
+        Scanner scanin = new Scanner(System.in);
+        System.out.println("This program will show the speed test results/nHow many days would you like to check?\n");
+
+        int days2Check = scanin.nextInt();
+
         File file = new File("speed.txt");
 
         Parser parser = new Parser(file);
