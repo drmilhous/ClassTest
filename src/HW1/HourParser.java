@@ -2,6 +2,8 @@ package HW1;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,6 +20,8 @@ public class HourParser {
 
     private String fileName;
     private int hours;
+    private double[] upload;
+    private double[] download;
 
     public HourParser(String name, int h) {
         fileName = name;
@@ -63,7 +67,6 @@ public class HourParser {
     	int segmentCount = -1;
     	int lineCount = 0;
     	int segmentCheck = 0; //Should always equal 1 when program is ran.
-    	
     	while(scan.hasNextLine()) {
     		if(scan.hasNext("Mon") || scan.hasNext("Tue") || scan.hasNext("Wed") || scan.hasNext("Thu") || scan.hasNext("Fri") ||
     		   scan.hasNext("Sat") || scan.hasNext("Sun")) {
@@ -71,7 +74,6 @@ public class HourParser {
     			segmentCheck++;
     			System.out.println(segmentCount + " SegCheck: " + segmentCheck + " Line: " + lineCount);
     		}
-    		
     		//Checks if there is a another start of a date.
     		if(segmentCheck > 1) {
     			System.out.println("Found Fail Case....");
@@ -79,9 +81,7 @@ public class HourParser {
     			segmentCheck= 1;
     			lineCount = 0;
     		}
-    		
     		seg[segmentCount][lineCount] = scan.nextLine();
-    		
     		if(segmentCount == (hours * 12)-1 && lineCount == SEGLENGTH-1) {
     			break; //Breaks if the user entered hour is equal to the hour counter
     		}else if(lineCount == SEGLENGTH-1) {
@@ -91,7 +91,6 @@ public class HourParser {
     			lineCount++;
     		}
     	}
-    	
     	return seg;
     }
 
@@ -103,11 +102,9 @@ public class HourParser {
     	int testCount;  // approx 9 tests/hour
     	double avgUp, avgDown;
     	Scanner numFinder = new Scanner();
-    	
     	while(hoursCount < hours){
     		double up = 0;
     		double down = 0;
-    		
     		while(testCount < 9){   // totaling the previous 9 upload and download speeds
     			up+=numFinder.nextDouble(seg[hoursCount][7]);
     			down+=numFinder.nextDouble(seg[hoursCount][9]);
@@ -125,7 +122,30 @@ public class HourParser {
      * This method will use the data and write to a csv file.
      */
     public void writeToCSV() {
-
+        SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY.MM.DD");
+        String fileName = dateFormat.format(new Date()) + " - log.csv";
+        try {
+            FileWriter fileWriter = new FileWriter(fileName);
+            fileWriter.append("Hour,Download Average,UploadAverage\n"); //Add the header.
+            int hourCount = 0;
+            for(int i = 0; i < download.length; i++)
+            {
+//                fileWriter.append("TESTHOUR,");
+//                fileWriter.append("TESTDOWNLOAD,");
+//                fileWriter.append("TESTUPLOAD\n");
+                fileWriter.append(hourCount + ",");
+                fileWriter.append(download[i] + ",");
+                fileWriter.append(upload[i] + "\n");
+                hourCount++;
+            }
+            fileWriter.flush();
+            fileWriter.close();
+            System.out.println("Write successful.");
+        }
+        catch(IOException e) {
+            System.err.println("Error in the writing process.");
+            System.exit(0);
+        }
     }
 
     public static void main(String[] args) {
@@ -134,6 +154,6 @@ public class HourParser {
         int hours = keyboard.nextInt();
         keyboard.close();
 
-        new HourParser("speed.txt", hours).readFile();
+        new HourParser("speed.txt", hours).writeToCSV();
     }
 }
