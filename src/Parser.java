@@ -13,7 +13,7 @@ public class Parser {
     private static File file;
 
     public Parser(File file) {
-        this.file = file;
+        Parser.file = file;
     }
 
     public static Test[] readInFile(){
@@ -103,7 +103,7 @@ public class Parser {
                 }
             }
 
-            t[i] = new Test(dateTime, down, up);
+            t[i] = new Test(SpeedTest.dateToUnix(dateTime), down, up);
         }
 
         return t;

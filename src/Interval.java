@@ -6,19 +6,18 @@ import java.util.Date;
  * Created by Keathan on 1/22/2016.
  */
 public class Interval {
-    ArrayList<Test> tests = new ArrayList<Test>();
-    private static double avgUp;
-    private static double avgDown;
-    private Date startDateTime;
+    private ArrayList<Test> tests;
+    private double avgUp;
+    private double avgDown;
+    private long startDateTime;
 
-    public Interval(ArrayList<Test> test, Date date) {
-        this.tests = test;
-        this.startDateTime = new Date(date.getTime());
+    public Interval(ArrayList<Test> t, long date) {
+        this.tests = new ArrayList<Test>();
+        for(int i=0; i<t.size(); i++) {
+            this.tests.add(new Test(t.get(i)));
+        }
+        this.startDateTime = date;
 
-        init(test);
-    }
-
-    private static void init(ArrayList<Test> t) {
         double maxUp = Double.MIN_VALUE;
         double minUp = Double.MAX_VALUE;
         double maxDown = Double.MIN_VALUE;
@@ -32,28 +31,28 @@ public class Interval {
         int minUpIndex = -1;
         int maxUpIndex = -1;
 
-        if(t.size() > 2) {
-            for(int i=0; i<t.size(); i++) {
-                if(t.get(i).getDown() < minDown) {
-                    minDown = t.get(i).getDown();
+        if(tests.size() > 2) {
+            for(int i=0; i<tests.size(); i++) {
+                if(tests.get(i).getDown() < minDown) {
+                    minDown = tests.get(i).getDown();
                     minDownIndex = i;
                 }
-                if(t.get(i).getUp() < minUp) {
-                    minUp = t.get(i).getUp();
+                if(tests.get(i).getUp() < minUp) {
+                    minUp = tests.get(i).getUp();
                     minUpIndex = i;
                 }
-                if(t.get(i).getDown() > maxDown) {
-                    maxDown = t.get(i).getDown();
+                if(tests.get(i).getDown() > maxDown) {
+                    maxDown = tests.get(i).getDown();
                     maxDownIndex = i;
                 }
-                if(t.get(i).getUp() > maxUp) {
-                    maxUp = t.get(i).getUp();
+                if(tests.get(i).getUp() > maxUp) {
+                    maxUp = tests.get(i).getUp();
                     maxUpIndex = i;
                 }
 
 
-                revisedUp.add(t.get(i).getUp());
-                revisedDown.add(t.get(i).getDown());
+                revisedUp.add(new Double(tests.get(i).getUp()));
+                revisedDown.add(new Double(tests.get(i).getDown()));
 
             }
 
@@ -64,40 +63,24 @@ public class Interval {
 
         }else {
             for(int i=0; i<t.size(); i++) {
-                revisedUp.add(t.get(i).getUp());
-                revisedDown.add(t.get(i).getDown());
+                revisedUp.add(new Double(tests.get(i).getUp()));
+                revisedDown.add(new Double(tests.get(i).getDown()));
             }
         }
 
-        averageUp(revisedUp);
-        averageDown(revisedDown);
-
-
-
+        this.avgUp = average(revisedUp);
+        this.avgDown = average(revisedDown);
     }
 
-    private static void averageUp(ArrayList<Double> ups){
-        int n = ups.size();
+    private static double average(ArrayList<Double> dubs){
+        int n = dubs.size();
         double sum = 0;
 
         for(int i=0; i<n; i++) {
-            sum += ups.get(i);
+            sum += dubs.get(i);
         }
 
-        avgUp = sum/n;
-
-    }
-
-    private static void averageDown(ArrayList<Double> downs){
-        int n = downs.size();
-        double sum = 0;
-
-        for(int i=0; i<n; i++) {
-            sum += downs.get(i);
-        }
-
-        avgDown = sum/n;
-
+        return sum/n;
     }
 
     public double getAvgUp() {
@@ -108,8 +91,11 @@ public class Interval {
         return avgDown;
     }
 
-    public Date getStartDateTime() {
+    public long getStartDateTime() {
         return startDateTime;
     }
 
+    public ArrayList<Test> getTests() {
+        return tests;
+    }
 }

@@ -1,4 +1,5 @@
 import java.io.File;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,91 +15,46 @@ public class SpeedTest {
 
     public static void main(String args[]) {
 
-
-        Scanner scanin = new Scanner(System.in);
+        Scanner in = new Scanner(System.in);
         System.out.println("This program will show the speed test results.\nHow many days would you like to check?\n");
-
-        int days2Check = scanin.nextInt();
+        int days2Check = in.nextInt();
 
         File file = new File("speed.txt");
 
         Parser parser = new Parser(file);
-        Test[] tests = parser.readInFile();
+        Test[] tests = Parser.readInFile();
 
-        Date startDate = tests[0].getDateTime();
-
-        startDate.setSeconds(0);
-        if(startDate.getMinutes() < 30) {
+        Date startDate = unixToDate(tests[0].getDateTime());
+        if (startDate.getMinutes() < 30) {
             startDate.setMinutes(0);
-        }else{
+        }else {
             startDate.setMinutes(30);
         }
-
-
-        long lastInterval = dateToUnix(startDate);
-
-        ArrayList<Interval> intervals = new ArrayList<Interval>();
-        ArrayList<Test> tests4Interval = new ArrayList<Test>();
-
-        Date tempDate = startDate;
-
-
-        for(int i=0; i<tests.length; i++){
-            if(dateToUnix(tests[i].getDateTime()) < lastInterval + INTERVAL_WIDTH){
-                tests4Interval.add(tests[i]);
-            }else {
-                intervals.add(new Interval(tests4Interval, new Date(tempDate.getTime())));
-                tests4Interval.clear();
-                tests4Interval.add(tests[i]);
-                tempDate = new Date(tests[i].getDateTime().getTime());
-                tempDate.setSeconds(0);
-                if(tempDate.getMinutes() < 30) {
-                    tempDate.setMinutes(0);
-                }else{
-                    tempDate.setMinutes(30);
-                }
-                lastInterval = dateToUnix(tempDate);
-
-            }
-        }
-        if(!tests4Interval.isEmpty()) {
-            intervals.add(new Interval(tests4Interval, tempDate));
-        }
-
         startDate.setSeconds(0);
-        startDate.setMinutes(0);
-        startDate.setHours(0);
 
-        long lastDay = dateToUnix(startDate);
+        long intervalDate = dateToUnix(startDate);
+        ArrayList<Test> testInInterval= new ArrayList<Test>();
+        ArrayList<Interval> intervals = new ArrayList<Interval>();
+        int intervalCounter = 0;
 
-        ArrayList<Day> days = new ArrayList<Day>();
-        ArrayList<Interval> daily = new ArrayList<Interval>();
-
-        Date intervalDate;
-        tempDate = startDate;
-
-        for(int i = 0; i<intervals.size(); i++) {
-            if(dateToUnix(intervals.get(i).getStartDateTime()) < lastDay + DAY_WIDTH) {
-                daily.add(intervals.get(i));
+        for(int i = 0; i < tests.length; i++) {
+            if(tests[i].getDateTime() < intervalDate + INTERVAL_WIDTH){
+                testInInterval.add(new Test(tests[i].getDateTime(), tests[i].getDown(), tests[i].getUp()));
             }else {
-                days.add(new Day(daily, new Date(tempDate.getTime())));
-                daily.clear();
-                daily.add(intervals.get(i));
-                tempDate = new Date(intervals.get(i).getStartDateTime().getTime());
-                tempDate.setSeconds(0);
-                tempDate.setMinutes(0);
-                tempDate.setHours(0);
-                lastDay = dateToUnix(tempDate);
+                intervals.add(new Interval(testInInterval, intervalDate));
+                intervalCounter++;
+                intervalDate += INTERVAL_WIDTH;
+                testInInterval = new ArrayList<Test>();
+                testInInterval.add(new Test(tests[i]));
             }
-
-
         }
 
-        if(!daily.isEmpty()) {
-            days.add(new Day(daily, tempDate));
+        if(!testInInterval.isEmpty()) {
+            intervals.add(new Interval(testInInterval, intervalDate));
         }
 
-       printResults(days2Check, days);
+
+      printResults(days2Check, intervals);
 
     }
 
@@ -113,13 +69,36 @@ public class SpeedTest {
         return date;
     }
 
-    public static void printResults(int days, ArrayList<Day> dayList) {
-        for(int i=0; i<dayList.size(); i++) {
-            for(int j=0; j<dayList.get(i).getIntervals().size(); j++) {
-                System.out.println(dayList.get(i).getIntervals().get(j).getStartDateTime());
-                System.out.println("Download: " + dayList.get(i).getIntervals().get(j).getAvgDown() + " mbps");
-                System.out.println("Upload: " + dayList.get(i).getIntervals().get(j).getAvgUp() + " mbps");
+    public static void printResults(int days, ArrayList<Interval> inv) {
+        Date curDate = new Date();
+        curDate.setHours(23);
+        curDate.setMinutes(59);
+        curDate.setSeconds(59);
+
+        long to = dateToUnix(curDate);
+        long from = to - (days * DAY_WIDTH) + 1;
+        long tempDate = 0;
+
+        DecimalFormat df = new DecimalFormat("#.00");
+
+        //From : 1453528800
+        //To : 1453615199
+
+        int counter = 0;
+
+        for(int i = inv.size()-1; i >= 0; i--) {
+            tempDate = inv.get(i).getStartDateTime();
+            if(tempDate <= to && tempDate >= from){
+                System.out.println(unixToDate(tempDate));
+                System.out.println("Average Download: " + df.format(inv.get(i).getAvgDown()));
+                System.out.println("Average Upload: " + df.format(inv.get(i).getAvgUp()));
+                System.out.println();
+                counter++;
             }
+        }
+
+        if(counter == 0) {
+            System.out.println("No records found for the entered time-frame.");
         }
     }
 

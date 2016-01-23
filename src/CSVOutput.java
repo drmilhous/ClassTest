@@ -16,7 +16,7 @@ public class CSVOutput {
 
                 for(int j = 0; j < days.get(i).getIntervals().size();j++){
 
-                    writer.append(days.get(i).getIntervals().get(j).getStartDateTime().toString());
+                    //writer.append(days.get(i).getIntervals().get(j).getStartDateTime());
                     writer.append("Download: " + days.get(i).getIntervals().get(j).getAvgDown() + " mbps");
                     writer.append("Upload: " + days.get(i).getIntervals().get(j).getAvgUp() + " mbps");
                 }
