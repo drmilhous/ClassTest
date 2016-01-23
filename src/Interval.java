@@ -12,12 +12,16 @@ public class Interval {
     private Date startDateTime;
 
     public Interval(ArrayList<Test> test) {
-        this.tests = tests;
+        this.tests = test;
         setStartDateTime();
+
+
         init(test);
+
+
     }
 
-    private static void init(ArrayList<Test> test) {
+    private static void init(ArrayList<Test> t) {
         double maxUp = Double.MIN_VALUE;
         double minUp = Double.MAX_VALUE;
         double maxDown = Double.MIN_VALUE;
@@ -26,40 +30,47 @@ public class Interval {
         ArrayList<Double> revisedUp = new ArrayList<Double>();
         ArrayList<Double> revisedDown = new ArrayList<Double>();
 
-        int minDownIndex = 0;
-        int maxDownIndex = 0;
-        int minUpIndex = 0;
-        int maxUpIndex = 0;
+        int minDownIndex = -1;
+        int maxDownIndex = -1;
+        int minUpIndex = -1;
+        int maxUpIndex = -1;
 
-        if(test.size() < 2) {
-            for(int i=0; i<test.size(); i++) {
-                if(test.get(i).getDown() < minDown) {
-                    minDown = test.get(i).getDown();
+        if(t.size() < 2) {
+            for(int i=0; i<t.size(); i++) {
+                if(t.get(i).getDown() < minDown) {
+                    minDown = t.get(i).getDown();
                     minDownIndex = i;
                 }
-                if(test.get(i).getUp() < minUp) {
-                    minUp = test.get(i).getUp();
+                if(t.get(i).getUp() < minUp) {
+                    minUp = t.get(i).getUp();
                     minUpIndex = i;
                 }
-                if(test.get(i).getDown() > maxDown) {
-                    maxDown = test.get(i).getDown();
+                if(t.get(i).getDown() > maxDown) {
+                    maxDown = t.get(i).getDown();
                     maxDownIndex = i;
                 }
-                if(test.get(i).getUp() > maxUp) {
-                    maxUp = test.get(i).getUp();
+                if(t.get(i).getUp() > maxUp) {
+                    maxUp = t.get(i).getUp();
                     maxUpIndex = i;
                 }
 
-                revisedUp.add(test.get(i).getUp());
-                revisedDown.add(test.get(i).getDown());
+
+                revisedUp.add(t.get(i).getUp());
+                revisedDown.add(t.get(i).getDown());
+
+
             }
 
-            revisedDown.remove(minDown);
-            revisedDown.remove(maxDown);
-            revisedUp.remove(minUp);
-            revisedUp.remove(maxUp);
+
+
+
+            revisedDown.remove(minDownIndex);
+            revisedDown.remove(maxDownIndex);
+            revisedUp.remove(minUpIndex);
+            revisedUp.remove(maxUpIndex);
 
         }
+
 
         averageUp(revisedUp);
         averageDown(revisedDown);
@@ -74,6 +85,7 @@ public class Interval {
         }
 
         avgUp = sum/n;
+
     }
 
     private static void averageDown(ArrayList<Double> downs){
@@ -85,6 +97,7 @@ public class Interval {
         }
 
         avgDown = sum/n;
+
     }
 
     public double getAvgUp() {
