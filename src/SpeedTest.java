@@ -56,7 +56,10 @@ public class SpeedTest {
 
       printResults(days2Check, intervals);
 
-    }
+        CSVOutput fileOutput = new CSVOutput();
+        fileOutput.generateCSV(days2Check, intervals);
+
+    }// end of main
 
     public static long dateToUnix(Date date){
         long unixTime = date.getTime()/1000;
