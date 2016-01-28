@@ -16,10 +16,10 @@ import java.util.Scanner;
 import javax.swing.JOptionPane;
 
 
-public class RemadeAverageOfDay {
+public class remade {
 
 	//Accept as a command line argument the number of days to average and the number of days to go back.
-	public static Integer[] Days()
+	public static Integer[] Days(int totalDays)
 	{
 
 		boolean repeat= false;
@@ -30,9 +30,9 @@ public class RemadeAverageOfDay {
 
 		do
 		{
-			String numOFDaysToGoBack=JOptionPane.showInputDialog(null,"Enter the Number of days to Go Back:\n Only Choose Between [1-9] \n Enter 0 for the same day ","NUM OF DAYS TO GO BACK",1);
+			String numOFDaysToGoBack=JOptionPane.showInputDialog(null,"Enter the Number of days to Go Back:\n Only Choose Between [1-"+(totalDays)+"] \n Enter 0 for the same day ","NUM OF DAYS TO GO BACK",1);
 			numDays[0]= Integer.parseInt(numOFDaysToGoBack);
-			if(numDays[0]>= 0 && numDays[0]<=9)
+			if(numDays[0]>= 0 && numDays[0]<=(totalDays))
 			{
 				again= false;
 			}
@@ -48,7 +48,7 @@ public class RemadeAverageOfDay {
 		{
 			String numOFDaysToAvg=JOptionPane.showInputDialog(null,"Enter the Number of days to Average: \n Choose From "+"1 - "+ (numDays[0]+1),"NUM OF DAYS TO AVG",1);
 			numDays[1]= Integer.parseInt(numOFDaysToAvg);
-			if(numDays[1]>0 && numDays[1]<=10 && numDays[1]<=(numDays[0]+1) )
+			if(numDays[1]>0 && numDays[1]<=(numDays[0]+1) )
 			{
 				repeat= false;
 			}
@@ -58,6 +58,7 @@ public class RemadeAverageOfDay {
 				repeat= true;
 			}
 		}while(repeat==true);
+
 
 
 		return numDays;
@@ -177,12 +178,41 @@ public class RemadeAverageOfDay {
 		fileDate=sdfmt1.parse(line);
 		int linecount=1;
 
+		Scanner fileA= null;
 
-		Integer [] hold= Days();
+		try {
+			 fileA= new Scanner(fileName);
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		String iniDate= fileA.nextLine();
+		Date initialDate=sdfmt1.parse(iniDate); 
+		Date finalDate= null;
+		while(fileA.hasNext())
+		{
+			try {
+				String dateline= fileA.nextLine();
+				
+				finalDate=sdfmt1.parse(dateline);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+			}
+			
+		}
+		System.out.println(finalDate);
+		Integer [] hold= Days(finalDate.getDate()-initialDate.getDate());
 		int noOfDaysToGoBack= hold[0]; 
 		int noOfDaysToAvg= hold[1];
-		int daytoBeginWith= 18-noOfDaysToGoBack;
+
+		// Command line input calculation
+		
+
+		int daytoBeginWith= finalDate.getDate()-noOfDaysToGoBack;
+		
 		int daytoEnd= daytoBeginWith + noOfDaysToAvg; 
+ 
 
 		//Set up sum value
 		double downloadAverage=0;
@@ -213,8 +243,13 @@ public class RemadeAverageOfDay {
 
 						if (!compareDay(d))
 						{
-							list[0][linecount]=d.getDate()+" Download";
-							list[0][linecount+1]=d.getDate()+" Upload";
+							try {
+								list[0][linecount]=d.getDate()+" Download";
+								list[0][linecount+1]=d.getDate()+" Upload";
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								//e.printStackTrace();
+							}
 							compareDay=d;
 							linecount+=2;
 						}
@@ -278,7 +313,7 @@ public class RemadeAverageOfDay {
 
 				if(d.getDate()==beginDate)
 				{
-					System.out.println(line);
+					//System.out.println(line);
 					compareDay=d;
 					fileDate=d;
 					break;
