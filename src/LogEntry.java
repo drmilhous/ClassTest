@@ -24,6 +24,12 @@ public class LogEntry
 				this.download = download;
 			}
 
+		@Override
+		public String toString()
+			{
+				return "LogEntry [download=" + download + ", upload=" + upload + ", time=" + time + "]";
+			}
+
 		public Float getUpload()
 			{
 				return upload;

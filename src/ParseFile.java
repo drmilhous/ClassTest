@@ -21,7 +21,6 @@ public class ParseFile
 				try
 					{
 						s = new Scanner(f);
-
 					}
 				catch (FileNotFoundException e)
 					{
@@ -70,7 +69,7 @@ public class ParseFile
 					}
 			}
 
-		private LinkedList<LogEntry> getEntries()
+		public LinkedList<LogEntry> getEntries()
 			{
 				return entries;
 			}
