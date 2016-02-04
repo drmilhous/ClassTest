@@ -27,12 +27,13 @@ public class CSVOutput {
         try{
             FileWriter writer = new FileWriter("Average.csv");
 
+            writer.append("Date, Download Speed, Upload Speed\n");
             for(int i = inv.size()-1; i >= 0; i--){
                     tempDate = inv.get(i).getStartDateTime();
                 if(tempDate <= to && tempDate >= from) {
-                    writer.append(unixToDate(tempDate).toString() + "\t");
-                    writer.append("Average Download: " + df.format(inv.get(i).getAvgDown()) + " mbps\t");
-                    writer.append("Average Upload: " + df.format(inv.get(i).getAvgUp()) + " mbps\n");
+                    writer.append(unixToDate(tempDate).toString() + ",");
+                    writer.append(df.format(inv.get(i).getAvgDown()) + ",");
+                    writer.append(df.format(inv.get(i).getAvgUp()) + " ,\n");
                     counter ++;
                 }
             }
