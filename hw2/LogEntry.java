@@ -3,7 +3,7 @@ package hw2;
 import java.util.Date;
 
 public class LogEntry {
-	
+
 	private Float upload;
 	private Float download;
 	private Date time;
@@ -22,7 +22,7 @@ public class LogEntry {
 	public void setTime(Date time) {
 		this.time = time;
 	}
-	
+
 
 	public Float getUpload() {
 		return upload;
@@ -38,6 +38,11 @@ public class LogEntry {
 
 	public void setDownload(Float download) {
 		this.download = download;
+	}
+	@Override
+	public String toString()
+	{
+		return "LogEntry [download=" + download + ", upload=" + upload + ", time=" + time + "]";
 	}
 
 }
