@@ -53,14 +53,23 @@ public class Main {
 
 		TeamAmericanFilter america = new TeamAmericanFilter(start, end);
 		List<LogEntry>americanFilteredList = america.filter(entries);
+		FileWriter fwriter = new FileWriter("Output.csv");
 
 		for (LogEntry l : americanFilteredList)
 		{
 			System.out.println(l);
 			
-			//Output for CSV file can go here!!!!!
+			try
+			{
+				fwriter.append(l);
+			}
+			catch(IOException e)
+			{
+				System.out.println("Error writing to file.");
+			}
 		}
 		
+		fwriter.close();
 	
 	}
 
