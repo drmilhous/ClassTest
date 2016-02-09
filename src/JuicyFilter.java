@@ -8,10 +8,16 @@ import java.util.List;
 public class JuicyFilter implements Filter {
     int INTERVAL_WIDTH = 1800;
 
+    int days;
+
+    public JuicyFilter(int daysBack) {
+        super();
+        this.days = daysBack;
+    }
 
     @Override
-    public List<LogEntry> logLazer(List<LogEntry> l) {
-        Date startDate = UnixDateUtil.unixToDate(l.get(0).getTime());
+    public List<Interval> logLazer(List<LogEntry> l) {
+        Date startDate = l.get(0).getTime();
         if (startDate.getMinutes() < 30) {
             startDate.setMinutes(0);
         }else {
@@ -25,7 +31,7 @@ public class JuicyFilter implements Filter {
 
         for(int i=0; i<l.size(); i++) {
             if(UnixDateUtil.dateToUnix(l.get(i).getTime()) < intervalDate + INTERVAL_WIDTH){
-                testInInterval.add(new Test(UnixDateUtil.dateToUnix(l.get(i).getTime()), l.get(i).getDownloadSTuff(), l.get(i).getUpload()));
+                testInInterval.add(new LogEntry(l.get(i).getDownloadSTuff(), l.get(i).getUpload(), l.get(i).getTime()));
             }else {
                 intervals.add(new Interval(testInInterval, intervalDate));
                 intervalDate += INTERVAL_WIDTH;
@@ -38,5 +44,6 @@ public class JuicyFilter implements Filter {
             intervals.add(new Interval(testInInterval, intervalDate));
         }
 
+        return intervals;
     }
 }

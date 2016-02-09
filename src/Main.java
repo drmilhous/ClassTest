@@ -28,10 +28,10 @@ public class Main
 				end.setSeconds(0);
 
 				end.setDate(10);
-				MillerFilter m = new MillerFilter(start, end);
-				//Juicebox j = new JuicyFilter(start, end);
-				List<LogEntry> millers = m.logLazer(entries);
-				for (LogEntry l : millers)
+				//MillerFilter m = new MillerFilter(start, end);
+				JuicyFilter j = new JuicyFilter(10); //parameter should be days to look back
+				List<Interval> juicies = j.logLazer(entries);
+				for (LogEntry l : juicies)
 					{
 						System.out.println(l);
 					}

@@ -8,8 +8,8 @@ import java.util.LinkedList;
  */
 public class Interval {
     private LinkedList<LogEntry> logEntries;
-    private double avgUp;
-    private double avgDown;
+    private float avgUp;
+    private float avgDown;
     private long startDateTime;
 
     public Interval(LinkedList<LogEntry> l, long date) {
@@ -19,13 +19,13 @@ public class Interval {
         }
         this.startDateTime = date;
 
-        double maxUp = Double.MIN_VALUE;
-        double minUp = Double.MAX_VALUE;
-        double maxDown = Double.MIN_VALUE;
-        double minDown = Double.MAX_VALUE;
+        float maxUp = Float.MIN_VALUE;
+        float minUp = Float.MAX_VALUE;
+        float maxDown = Float.MIN_VALUE;
+        float minDown = Float.MAX_VALUE;
 
-        LinkedList<Double> revisedUp = new LinkedList<Double>();
-        LinkedList<Double> revisedDown = new LinkedList<Double>();
+        LinkedList<Float> revisedUp = new LinkedList<Float>();
+        LinkedList<Float> revisedDown = new LinkedList<Float>();
 
         int minDownIndex = -1;
         int maxDownIndex = -1;
@@ -52,8 +52,8 @@ public class Interval {
                 }
 
 
-                revisedUp.add(new Double(logEntries.get(i).getUpload()));
-                revisedDown.add(new Double(logEntries.get(i).getDownloadSTuff()));
+                revisedUp.add(new Float(logEntries.get(i).getUpload()));
+                revisedDown.add(new Float(logEntries.get(i).getDownloadSTuff()));
 
             }
 
@@ -64,8 +64,8 @@ public class Interval {
 
         }else {
             for(int i=0; i<l.size(); i++) {
-                revisedUp.add(new Double(logEntries.get(i).getUpload()));
-                revisedDown.add(new Double(logEntries.get(i).getDownloadSTuff()));
+                revisedUp.add(new Float(logEntries.get(i).getUpload()));
+                revisedDown.add(new Float(logEntries.get(i).getDownloadSTuff()));
             }
         }
 
@@ -73,9 +73,9 @@ public class Interval {
         this.avgDown = average(revisedDown);
     }
 
-    private static double average(LinkedList<Double> dubs){
+    private static float average(LinkedList<Float> dubs){
         int n = dubs.size();
-        double sum = 0;
+        float sum = 0;
 
         for(int i=0; i<n; i++) {
             sum += dubs.get(i);
@@ -84,11 +84,11 @@ public class Interval {
         return sum/n;
     }
 
-    public double getAvgUp() {
+    public float getAvgUp() {
         return avgUp;
     }
 
-    public double getAvgDown() {
+    public float getAvgDown() {
         return avgDown;
     }
 
