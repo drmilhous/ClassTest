@@ -29,6 +29,7 @@ public class Main
 
 				end.setDate(10);
 				MillerFilter m = new MillerFilter(start, end);
+				//Juicebox j = new JuicyFilter(start, end);
 				List<LogEntry> millers = m.logLazer(entries);
 				for (LogEntry l : millers)
 					{
