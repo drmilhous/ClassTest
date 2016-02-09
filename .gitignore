@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ### Intellij ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
 
@@ -105,3 +106,6 @@ local.properties
 
 # STS (Spring Tool Suite)
 .springBeans
+=======
+/bin/
+>>>>>>> TeamName2
