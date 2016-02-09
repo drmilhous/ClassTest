@@ -1,13 +1,14 @@
+
 package HW1;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -16,12 +17,13 @@ import java.util.Scanner;
  * As user for the number of hours. (TeamName)
  */
 public class HourParser {
-	private final int SEGLENGTH = 10; //Length one segment
 
     private String fileName;
     private int hours;
     private double[] upload;
     private double[] download;
+    
+    List<Segment> segments = new LinkedList<Segment>();
 
     public HourParser(String name, int h) {
         fileName = name;
@@ -38,26 +40,18 @@ public class HourParser {
             System.err.println("Error finding the file.");
             System.exit(0);
         }
-
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE MMM dd kk:mm:ss z yyyy", Locale.ENGLISH);
         
         try {
-    		//Creates array depending on how many hours the user enters.
-    		String[][] segments = new String[hours * 12][SEGLENGTH];
-    		segments = getSegments(fileScanner,segments);
-    		getThroughput(segments);
-            writeToCSV();
-    		//Uncomment to see the output of the segments array.
-//    		for(int x=0;x<(hours*12);x++) {
-//    			if(x%12 == 0) {
-//    				System.out.println("\n=============================NEW HOUR=============================");
-//    			}
-//    			for(int i=0;i<SEGLENGTH;i++) {
-//    				System.out.println(segments[x][i]);
-//    			}
-//    			System.out.println("\n");
+    		getSegments(fileScanner);
+    		
+//Uncomment to print all the segment's information.
+//    		for(Segment x : segments) {
+//    			System.out.println("Download: " + x.getDownloadTime() + " Upload: " + x.getUploadTime() + " Failed: " + x.isFailedTest());
 //    		}
-
+    		
+    		//getThroughput(segments);
+            //writeToCSV();
+            
           } catch(Exception e) { //Change Exception
             System.out.println("Error in parsing the line.");
             e.printStackTrace();
@@ -67,35 +61,72 @@ public class HourParser {
     /**
      * This method should get the segments of info depending on the hours.
      */
-    public String[][] getSegments(Scanner scan, String[][] seg) {
-    	int segmentCount = -1;
-    	int lineCount = 0;
-    	int segmentCheck = 0; //Should always equal 1 when program is ran.
+    public void getSegments(Scanner scan) {
+    	SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+    	
+    	int hourCounter = -1;
+    	int previousHour = 0;
+    	
+    	boolean failedTest = false;
+    	
+    	String line = scan.nextLine();
+    	
     	while(scan.hasNextLine()) {
-    		if(scan.hasNext("Mon") || scan.hasNext("Tue") || scan.hasNext("Wed") || scan.hasNext("Thu") || scan.hasNext("Fri") ||
-    		   scan.hasNext("Sat") || scan.hasNext("Sun")) {
-    			segmentCount++;
-    			segmentCheck++;
-    			System.out.println(segmentCount + " SegCheck: " + segmentCheck + " Line: " + lineCount);
+    		//Breaks out of the loop if enough hours have been searched.
+    		if(hourCounter == this.hours) {
+    			break;
     		}
-    		//Checks if there is a another start of a date.
-    		if(segmentCheck > 1) {
-    			System.out.println("Found Fail Case....");
-    			segmentCount--;
-    			segmentCheck= 1;
-    			lineCount = 0;
-    		}
-    		seg[segmentCount][lineCount] = scan.nextLine();
-    		if(segmentCount == (hours * 12)-1 && lineCount == SEGLENGTH-1) {
-    			break; //Breaks if the user entered hour is equal to the hour counter
-    		}else if(lineCount == SEGLENGTH-1) {
-    			segmentCheck--;
-    			lineCount = 0;
-    		}else {
-    			lineCount++;
+    		
+    		//Finds the current hour we are on and adds on to the hour counter.
+    		try {
+    			Date date = format.parse(line);
+    			String time = date.getHours() + ":" + date.getMinutes()+ ":" + date.getSeconds();
+    			
+    			if(date.getHours() != previousHour) { //Iterates the hour counter if there is a change.
+    				hourCounter++;
+    				previousHour = date.getHours();
+    			}
+    			//====================Only gets past here if it doesn't catch an exception=====================
+    			scan.nextLine();
+    			scan.nextLine();
+    			line = scan.nextLine();
+    			
+    			if(line.contains("Testing") && scan.hasNextLine()) { //Finds the download and upload speeds.
+    				double download = 0;
+    				double upload = 0;
+    				
+    				while(download == 0 || upload == 0) {
+    					if(scan.hasNext("Download:")) {
+    						scan.next();
+    						download = scan.nextDouble();
+    					}else if(scan.hasNext("Upload:")) {
+    						scan.next();
+    						upload = scan.nextDouble();
+    					}else{
+    						scan.next();
+    					}
+    				}
+    				//Uncomment to show all download/upload speeds being added.
+    				//System.out.println("Download: " + download + "  Upload: " + upload + " Hour: "+ (hourCounter+1) + "\n");
+    				
+    				segments.add(new Segment(upload,download,failedTest));
+    			}else {
+    				failedTest = true;
+    				segments.add(new Segment(0,0,failedTest));
+    				failedTest = false;
+    			}
+    			
+    			line = scan.nextLine();
+    		} catch(Exception e) {
+    			line = scan.nextLine();
+    			//e.printStackTrace();
     		}
     	}
-    	return seg;
+    	//The parser counts the start of a new hour as a part of previous hour.
+    	//This just removes the last segment object from the segments list.
+    	if(hours < 215) {
+    		segments.remove(segments.size()-1);
+    	}
     }
 
     /**
