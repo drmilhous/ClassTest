@@ -1,5 +1,7 @@
 package hw2;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,7 +45,7 @@ public class Main {
 		dayToStart = lastDateinEntries - dayGoBack;
 
 		//Set the start and end date for TeamAmericanFilter to desired date
-		
+
 		start.setDate(dayToStart);
 		end.setDate(dayToStart + 1);
 
@@ -54,14 +56,33 @@ public class Main {
 		TeamAmericanFilter america = new TeamAmericanFilter(start, end);
 		List<LogEntry>americanFilteredList = america.filter(entries);
 
-		for (LogEntry l : americanFilteredList)
+
+
+
+		//Output for CSV file can go here!!!!!
+
+		try
 		{
-			System.out.println(l);
+			//Creates .csv file for output
+			FileWriter fwriter = new FileWriter("Average.csv");
+
+			fwriter.append("Time,Average Download,Average Upload\n");
 			
-			//Output for CSV file can go here!!!!!
+			//Adds data to .csv file
+			for (LogEntry l : americanFilteredList)
+			{
+
+				fwriter.append(l.getTime() + "," + l.getDownload() + "," + l.getUpload() +"\n");
+			}
+			fwriter.close();
 		}
-		
-	
+		catch(IOException e)
+		{
+			System.out.println("YA DONE MESSED UP, BRAH!");
+		}
 	}
 
+
 }
+
+
