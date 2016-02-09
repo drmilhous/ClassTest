@@ -56,6 +56,7 @@ public class Main {
 		TeamAmericanFilter america = new TeamAmericanFilter(start, end);
 		List<LogEntry>americanFilteredList = america.filter(entries);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 
@@ -88,14 +89,30 @@ public class Main {
 			}
 			
 >>>>>>> ce929a79d254725f68299339c9a5d3af7ff8ee97
+=======
+		
+		try
+		{
+			FileWriter fwriter = new FileWriter("Output.csv");
+			
+			for (LogEntry l : americanFilteredList)
+			{
+				System.out.println(l);
+				fwriter.append(l.toString());
+			}
+			
+>>>>>>> ce929a79d254725f68299339c9a5d3af7ff8ee97
 			fwriter.close();
 		}
 		catch(IOException e)
 		{
 <<<<<<< HEAD
+<<<<<<< HEAD
 			System.out.println("YA DONE MESSED UP, BRAH!");
 		}
 =======
+=======
+>>>>>>> ce929a79d254725f68299339c9a5d3af7ff8ee97
 			System.out.println("Error writing to file.");
 		}
 	
