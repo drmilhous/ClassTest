@@ -1,8 +1,8 @@
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Dan Harshbarger on 1/22/2016.
@@ -10,7 +10,7 @@ import java.util.Date;
 public class CSVOutput {
     static int DAY_WIDTH = 86400;
 
-    public static void generateCSV(int days, ArrayList<Interval> inv) {
+    public static void generateCSV(int days, List<Interval> inv) {
 
         Date curDate = new Date();
         curDate.setHours(23);
