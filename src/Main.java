@@ -35,6 +35,8 @@ public class Main {
 		List<Interval> juicies = j.logLazer(entries);
 
 		printResults(25, juicies); //replace 25 w/ user input
+		CSVOutput out = new CSVOutput();
+		out.generateCSV(25,juicies); //replace 25 with user variable
 	}
 
 	public static void printResults(int days, List<Interval> inv) {
