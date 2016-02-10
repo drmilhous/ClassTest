@@ -1,6 +1,7 @@
 import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
 	private static int DAY_WIDTH = 86400;
@@ -32,9 +33,14 @@ public class Main {
 		Filter j = new JuicyFilter(10); //parameter should be days to look back
 		List<Interval> juicies = j.logLazer(entries);
 
-		printResults(25, juicies); //replace 25 w/ user input
+		Scanner in = new Scanner(System.in);
+		System.out.println("This program will show the speed test results.\nHow many days would you like to check?\n");
+		int days2Check = in.nextInt();
+
+
+		printResults(days2Check, juicies);
 		CSVOutput out = new CSVOutput();
-		out.generateCSV(25,juicies); //replace 25 with user variable
+		out.generateCSV(days2Check,juicies);
 	}
 
 	public static void printResults(int days, List<Interval> inv) {
