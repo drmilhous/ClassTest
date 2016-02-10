@@ -35,14 +35,12 @@ public class SpeedTest {
         long intervalDate = dateToUnix(startDate);
         ArrayList<Test> testInInterval= new ArrayList<Test>();
         ArrayList<Interval> intervals = new ArrayList<Interval>();
-        int intervalCounter = 0;
 
         for(int i = 0; i < tests.length; i++) {
             if(tests[i].getDateTime() < intervalDate + INTERVAL_WIDTH){
                 testInInterval.add(new Test(tests[i].getDateTime(), tests[i].getDown(), tests[i].getUp()));
             }else {
                 intervals.add(new Interval(testInInterval, intervalDate));
-                intervalCounter++;
                 intervalDate += INTERVAL_WIDTH;
                 testInInterval = new ArrayList<Test>();
                 testInInterval.add(new Test(tests[i]));

@@ -1,0 +1,49 @@
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+
+/**
+ * Created by Keathan on 2/8/2016.
+ */
+public class JuicyFilter implements Filter {
+    int INTERVAL_WIDTH = 1800;
+
+    int days;
+
+    public JuicyFilter(int daysBack) {
+        super();
+        this.days = daysBack;
+    }
+
+    @Override
+    public List<Interval> logLazer(List<LogEntry> l) {
+        Date startDate = l.get(0).getTime();
+        if (startDate.getMinutes() < 30) {
+            startDate.setMinutes(0);
+        }else {
+            startDate.setMinutes(30);
+        }
+        startDate.setSeconds(0);
+
+        long intervalDate = UnixDateUtil.dateToUnix(startDate);
+        LinkedList<LogEntry> testInInterval= new LinkedList<LogEntry>();
+        LinkedList<Interval> intervals = new LinkedList<Interval>();
+
+        for(int i=0; i<l.size(); i++) {
+            if(UnixDateUtil.dateToUnix(l.get(i).getTime()) < intervalDate + INTERVAL_WIDTH){
+                testInInterval.add(new LogEntry(l.get(i).getDownloadSTuff(), l.get(i).getUpload(), l.get(i).getTime()));
+            }else {
+                intervals.add(new Interval(testInInterval, intervalDate));
+                intervalDate += INTERVAL_WIDTH;
+                testInInterval = new LinkedList<LogEntry>();
+                testInInterval.add(new LogEntry(l.get(i).getDownloadSTuff(), l.get(i).getUpload(), l.get(i).getTime()));
+            }
+        }
+
+        if(!testInInterval.isEmpty()) {
+            intervals.add(new Interval(testInInterval, intervalDate));
+        }
+
+        return intervals;
+    }
+}
