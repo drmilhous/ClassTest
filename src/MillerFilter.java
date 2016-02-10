@@ -25,15 +25,11 @@ public class MillerFilter implements Filter
 			}
 
 		@Override
-		public List<LogEntry> logLazer(List<LogEntry> l)
+		public List<Interval> logLazer(List<LogEntry> l)
 			{
-				List<LogEntry> result = new LinkedList<LogEntry>();
+				List<Interval> result = new LinkedList<Interval>();
 				for (LogEntry m : l)
 					{
-						if (m.getTime().before(getEnd()) && m.getTime().after(getStart()))
-							{
-								result.add(m);
-							}
 					}
 
 				return result;
