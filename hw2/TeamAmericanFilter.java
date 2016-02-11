@@ -8,23 +8,17 @@ public class TeamAmericanFilter implements Filter{
 
 
 	Date	start;
-	Date	end;
 
 	public Date getStart()
 	{
 		return start;
 	}
 
-	public Date getEnd()
-	{
-		return end;
-	}
-
-	public TeamAmericanFilter(Date start, Date end)
+	public TeamAmericanFilter(Date start)
 	{
 		super();
 		this.start = start;
-		this.end = end;
+
 	}
 
 	@Override
@@ -35,11 +29,15 @@ public class TeamAmericanFilter implements Filter{
 		float averageDownload;
 		float averageUpload;
 		Date iniDate = null;
+		int iniHour = 0;
 		int iniMin = 0;
 		int count = 0;
 		int entries = 0;
 		int time1 = 0;
-		int time2 = 20;
+		int time2 = 15;
+		Date replacer = null;
+		boolean newHour = false;
+		boolean goBack = false;
 		List<LogEntry> result = new LinkedList<LogEntry>();
 		for (LogEntry m : l)
 		{
@@ -48,36 +46,55 @@ public class TeamAmericanFilter implements Filter{
 			if(m.getTime().getDate() == start.getDate())
 			{
 				iniDate = m.getTime();
+				iniHour = iniDate.getHours();
 				iniMin = iniDate.getMinutes();
-				
-				if (iniMin >= time1 && iniMin <= time2)
+				//Creating a do loop to move one entry back in order to not skip the entry when if condition is false
+				do
 				{
-					 //iniDate =  m.getTime();
-				}
-				downloadTotal += m.getDownload();
-				uploadTotal += m.getUpload();
-				count++;
-				entries++;
-				
-				//if (count ==3)
-				//{
-					averageDownload = downloadTotal/entries;
-					averageUpload = uploadTotal/entries;
-					iniDate.setMinutes(time1);
-					iniDate.setSeconds(0);
-					downloadTotal = 0;
-					uploadTotal = 0;
-					count =0;
-					entries = 0;
-					time1 += 15;
-					time2 += 15;
-					result.add(new LogEntry(averageDownload, averageUpload, iniDate));
-				//}
-		
+					if ((iniHour*60) + iniMin > time1 && (iniHour*60) + iniMin <= time2)
+					{
+						downloadTotal += m.getDownload();
+						uploadTotal += m.getUpload();				
+						entries++;
+						goBack = false;
+					}
+					else
+					{
+						if (time2 % 60 == 0) {
+							newHour = true;
+						}
+						
+						averageDownload = downloadTotal/entries;
+						averageUpload = uploadTotal/entries;
+						iniDate.setMinutes(time2);
+						iniDate.setSeconds(0);
+						downloadTotal = 0;
+						uploadTotal = 0;
+						entries = 0;
+						goBack = true;
+						//if(time1 != 45 && time2 != 60 )
+						//{
+							time1 += 15;
+							time2 += 15;
+						//}
+						//else
+						//{
+						//	time1 = 0;
+						//	time2 = 15;
+						//}
+						if (newHour == true) {
+							replacer = iniDate;
+							replacer.setMinutes(replacer.getMinutes() - 60);
+							result.add(new LogEntry(averageDownload, averageUpload, replacer));
+							newHour = false;
+						} else {
+							result.add(new LogEntry(averageDownload, averageUpload, iniDate));
+						}
+					}
+
+				}while(goBack == true);
 			}
 		}
-
 		return result;
 	}
-
 }
