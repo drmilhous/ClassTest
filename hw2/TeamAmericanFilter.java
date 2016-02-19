@@ -31,12 +31,11 @@ public class TeamAmericanFilter implements Filter{
 		Date iniDate = null;
 		int iniHour = 0;
 		int iniMin = 0;
-		int count = 0;
 		int entries = 0;
 		int time1 = 0;
 		int time2 = 15;
-		Date replacer = null;
-		boolean newHour = false;
+		//		Date replacer = null;
+		//		boolean newHour = false;
 		boolean goBack = false;
 		List<LogEntry> result = new LinkedList<LogEntry>();
 		for (LogEntry m : l)
@@ -51,7 +50,8 @@ public class TeamAmericanFilter implements Filter{
 				//Creating a do loop to move one entry back in order to not skip the entry when if condition is false
 				do
 				{
-					if ((iniHour*60) + iniMin > time1 && (iniHour*60) + iniMin <= time2)
+					//if ((iniHour*60) + iniMin > time1 && (iniHour*60) + iniMin <= time2)
+					if(iniMin>= time1 && iniMin < time2)
 					{
 						downloadTotal += m.getDownload();
 						uploadTotal += m.getUpload();				
@@ -60,36 +60,41 @@ public class TeamAmericanFilter implements Filter{
 					}
 					else
 					{
-						if (time2 % 60 == 0) {
-							newHour = true;
-						}
-						
+						//						if (time2 % 60 == 0) {
+						//							newHour = true;
+						//						}
+
 						averageDownload = downloadTotal/entries;
 						averageUpload = uploadTotal/entries;
 						iniDate.setMinutes(time2);
 						iniDate.setSeconds(0);
+						//System.out.println(time2);
+						result.add(new LogEntry(averageDownload, averageUpload, iniDate));
+						
 						downloadTotal = 0;
 						uploadTotal = 0;
 						entries = 0;
 						goBack = true;
-						//if(time1 != 45 && time2 != 60 )
-						//{
-							time1 += 15;
-							time2 += 15;
-						//}
-						//else
-						//{
-						//	time1 = 0;
-						//	time2 = 15;
-						//}
-						if (newHour == true) {
-							replacer = iniDate;
-							replacer.setMinutes(replacer.getMinutes() - 60);
-							result.add(new LogEntry(averageDownload, averageUpload, replacer));
-							newHour = false;
-						} else {
-							result.add(new LogEntry(averageDownload, averageUpload, iniDate));
+						if(time2 == 60 )
+						{
+							time1 = 0;
+							time2 = 15;
+							iniDate.setHours(iniDate.getHours()-1);
+
 						}
+						else
+						{
+							time1 += 15;
+							time2 += 15;	
+						}
+						//						if (newHour == true) {
+						//							replacer = iniDate;
+						//							replacer.setMinutes(replacer.getMinutes() - 60);
+						//							result.add(new LogEntry(averageDownload, averageUpload, replacer));
+						//							newHour = false;
+						//						} else {
+						//							result.add(new LogEntry(averageDownload, averageUpload, iniDate));
+						//						}
 					}
 
 				}while(goBack == true);
